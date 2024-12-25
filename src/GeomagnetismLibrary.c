@@ -4173,12 +4173,12 @@ year in decimal year
     return 0;
 }
 
-int calculateMagneticField(MAGtype_CoordGeodetic *CoordGeodetic, MAGtype_Date *MagneticDate, MAGtype_MagneticModel *MagneticModel, MAGtype_GeoMagneticElements *GeoMagneticElements)
+int calculateMagneticField(MAGtype_CoordGeodetic *CoordGeodetic, MAGtype_Date *MagneticDate, MAGtype_MagneticModel *MagneticModel, MAGtype_GeoMagneticElements *GeoMagneticElements, MAGtype_GeoMagneticElements *Errors)
     /*
     Adapted from wmm_point.c
     */
     {
-    //MAGtype_GeoMagneticElements Errors;
+
     //MAGtype_Geoid Geoid;
     MAGtype_Ellipsoid Ellip;
     MAGtype_CoordSpherical CoordSpherical;
@@ -4214,7 +4214,7 @@ int calculateMagneticField(MAGtype_CoordGeodetic *CoordGeodetic, MAGtype_Date *M
     MAG_TimelyModifyMagneticModel(*MagneticDate, MagneticModels[0], TimedMagneticModel); /* Time adjust the coefficients, Equation 19, WMM Technical report */
     MAG_Geomag(Ellip, CoordSpherical, *CoordGeodetic, TimedMagneticModel, GeoMagneticElements); /* Computes the geoMagnetic field elements and their time change*/
     MAG_CalculateGridVariation(*CoordGeodetic, GeoMagneticElements);
-    //MAG_WMMErrorCalc(GeoMagneticElements->H, &Errors);
+    MAG_WMMErrorCalc(GeoMagneticElements->H, Errors);
 }
 
 void MAG_PrintUserDataWithUncertaintySimplified(MAGtype_GeoMagneticElements GeomagElements,

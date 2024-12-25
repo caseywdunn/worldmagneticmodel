@@ -18,6 +18,7 @@ int main(int argc, char *argv[]){
     // Populated by field calculation
     MAGtype_CoordGeodetic CoordGeodetic;
     MAGtype_MagneticModel *TimedMagneticModel;
+    MAGtype_GeoMagneticElements Errors;
 
     // Parse latitude, longitude, altitude, and year from the arguments
     double latitude = atof(argv[1]);
@@ -29,9 +30,9 @@ int main(int argc, char *argv[]){
     ingestPoint(latitude, longitude, altitude, year, &GeoMagneticElements, &UserDate);
 
     // Calculate the field at the point and time
-    calculateMagneticField(&CoordGeodetic, &UserDate, TimedMagneticModel, &GeoMagneticElements);
+    calculateMagneticField(&CoordGeodetic, &UserDate, TimedMagneticModel, &GeoMagneticElements, &Errors);
 
     // Print the results
-    MAG_PrintUserDataSimplified(GeoMagneticElements, CoordGeodetic, UserDate, TimedMagneticModel);
+   MAG_PrintUserDataWithUncertaintySimplified(GeoMagneticElements, Errors, CoordGeodetic, UserDate, TimedMagneticModel);
 
 }

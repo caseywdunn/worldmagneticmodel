@@ -510,7 +510,7 @@ int MAG_GetAltitude(char* Query_String, MAGtype_Geoid *Geoid, MAGtype_CoordGeode
 
 // Yale addition
 int ingestPoint(double lat, double lon, double alt, double year, MAGtype_CoordGeodetic *CoordGeodetic, MAGtype_Date *MagneticDate);
-int calculateMagneticField(MAGtype_CoordGeodetic *CoordGeodetic, MAGtype_Date *MagneticDate, MAGtype_MagneticModel *MagneticModel, MAGtype_GeoMagneticElements *GeoMagneticElements);
+int calculateMagneticField(MAGtype_CoordGeodetic *CoordGeodetic, MAGtype_Date *MagneticDate, MAGtype_MagneticModel *MagneticModel, MAGtype_GeoMagneticElements *GeoMagneticElements, MAGtype_GeoMagneticElements *Errors);
 
 void MAG_PrintUserDataWithUncertaintySimplified(MAGtype_GeoMagneticElements GeomagElements,
         MAGtype_GeoMagneticElements Errors,
