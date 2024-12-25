@@ -4173,7 +4173,7 @@ year in decimal year
     return 0;
 }
 
-int calculateMagneticField(MAGtype_CoordGeodetic *CoordGeodetic, MAGtype_Date *MagneticDate, MAGtype_MagneticModel *MagneticModel, MAGtype_GeoMagneticElements *GeoMagneticElements, MAGtype_GeoMagneticElements *Errors)
+int calculateMagneticField(MAGtype_CoordGeodetic *CoordGeodetic, MAGtype_Date *MagneticDate, MAGtype_GeoMagneticElements *GeoMagneticElements, MAGtype_GeoMagneticElements *Errors)
     /*
     Adapted from wmm_point.c
     */
@@ -4220,73 +4220,48 @@ int calculateMagneticField(MAGtype_CoordGeodetic *CoordGeodetic, MAGtype_Date *M
 void MAG_PrintUserDataWithUncertaintySimplified(MAGtype_GeoMagneticElements GeomagElements,
         MAGtype_GeoMagneticElements Errors,
         MAGtype_CoordGeodetic SpaceInput,
-        MAGtype_Date TimeInput,
-        MAGtype_MagneticModel *MagneticModel)
+        MAGtype_Date TimeInput)
 {
     char DeclString[100];
     char InclString[100];
     MAG_DegreeToDMSstring(GeomagElements.Incl, 2, InclString);
+    /*
     if(GeomagElements.H < 6000 && GeomagElements.H > 2000)
+        // Horizontal Field strength low
         MAG_Warnings(1, GeomagElements.H, MagneticModel);
     if(GeomagElements.H < 2000)
-        MAG_Warnings(2, GeomagElements.H, MagneticModel);
-    if(MagneticModel->SecularVariationUsed == TRUE)
-    {
-        MAG_DegreeToDMSstring(GeomagElements.Decl, 2, DeclString);
-        printf("\n Results For \n\n");
-        if(SpaceInput.phi < 0)
-            printf("Latitude	%.2fS\n", -SpaceInput.phi);
-        else
-            printf("Latitude	%.2fN\n", SpaceInput.phi);
-        if(SpaceInput.lambda < 0)
-            printf("Longitude	%.2fW\n", -SpaceInput.lambda);
-        else
-            printf("Longitude	%.2fE\n", SpaceInput.lambda);
-        printf("Altitude:	%.2f Kilometers above the WGS-84 ellipsoid\n", SpaceInput.HeightAboveEllipsoid);
-        printf("Date:		%.1f\n", TimeInput.DecimalYear);
-        printf("\n		Main Field\t\t\tSecular Change\n");
-        printf("F	=	%9.1f +/- %5.1f nT\t\t Fdot = %5.1f\tnT/yr\n", GeomagElements.F, Errors.F, GeomagElements.Fdot);
-        printf("H	=	%9.1f +/- %5.1f nT\t\t Hdot = %5.1f\tnT/yr\n", GeomagElements.H, Errors.H, GeomagElements.Hdot);
-        printf("X	=	%9.1f +/- %5.1f nT\t\t Xdot = %5.1f\tnT/yr\n", GeomagElements.X, Errors.X, GeomagElements.Xdot);
-        printf("Y	=	%9.1f +/- %5.1f nT\t\t Ydot = %5.1f\tnT/yr\n", GeomagElements.Y, Errors.Y, GeomagElements.Ydot);
-        printf("Z	=	%9.1f +/- %5.1f nT\t\t Zdot = %5.1f\tnT/yr\n", GeomagElements.Z, Errors.Z, GeomagElements.Zdot);
-        if(GeomagElements.Decl < 0)
-            printf("Decl	=%20s  (WEST) +/-%3.0f Min Ddot = %.1f\tMin/yr\n", DeclString, 60 * Errors.Decl, 60 * GeomagElements.Decldot);
-        else
-            printf("Decl	=%20s  (EAST) +/-%3.0f Min Ddot = %.1f\tMin/yr\n", DeclString, 60 * Errors.Decl, 60 * GeomagElements.Decldot);
-        if(GeomagElements.Incl < 0)
-            printf("Incl	=%20s  (UP)   +/-%3.0f Min Idot = %.1f\tMin/yr\n", InclString, 60 * Errors.Incl, 60 * GeomagElements.Incldot);
-        else
-            printf("Incl	=%20s  (DOWN) +/-%3.0f Min Idot = %.1f\tMin/yr\n", InclString, 60 * Errors.Incl, 60 * GeomagElements.Incldot);
-    } else
-    {
-        MAG_DegreeToDMSstring(GeomagElements.Decl, 2, DeclString);
-        printf("\n Results For \n\n");
-        if(SpaceInput.phi < 0)
-            printf("Latitude	%.2fS\n", -SpaceInput.phi);
-        else
-            printf("Latitude	%.2fN\n", SpaceInput.phi);
-        if(SpaceInput.lambda < 0)
-            printf("Longitude	%.2fW\n", -SpaceInput.lambda);
-        else
-            printf("Longitude	%.2fE\n", SpaceInput.lambda);
-        printf("Altitude:	%.2f Kilometers above WGS-84 Ellipsoid\n", SpaceInput.HeightAboveEllipsoid);
-        printf("Date:		%.1f\n", TimeInput.DecimalYear);
-        printf("\n	Main Field\n");
-        printf("F	=	%-9.1f +/-%5.1f nT\n", GeomagElements.F, Errors.F);
-        printf("H	=	%-9.1f +/-%5.1f nT\n", GeomagElements.H, Errors.H);
-        printf("X	=	%-9.1f +/-%5.1f nT\n", GeomagElements.X, Errors.X);
-        printf("Y	=	%-9.1f +/-%5.1f nT\n", GeomagElements.Y, Errors.Y);
-        printf("Z	=	%-9.1f +/-%5.1f nT\n", GeomagElements.Z, Errors.Z);
-        if(GeomagElements.Decl < 0)
-            printf("Decl	=%20s  (WEST)+/-%4f\n", DeclString, 60 * Errors.Decl);
-        else
-            printf("Decl	=%20s  (EAST)+/-%4f\n", DeclString, 60 * Errors.Decl);
-        if(GeomagElements.Incl < 0)
-            printf("Incl	=%20s  (UP)+/-%4f\n", InclString, 60 * Errors.Incl);
-        else
-            printf("Incl	=%20s  (DOWN)+/-%4f\n", InclString, 60 * Errors.Incl);
-    }
+        // Horizontal Field strength very low
+        AG_Warnings(2, GeomagElements.H, MagneticModel);
+    */
+
+    MAG_DegreeToDMSstring(GeomagElements.Decl, 2, DeclString);
+    printf("\n Results For \n\n");
+    if(SpaceInput.phi < 0)
+        printf("Latitude	%.2fS\n", -SpaceInput.phi);
+    else
+        printf("Latitude	%.2fN\n", SpaceInput.phi);
+    if(SpaceInput.lambda < 0)
+        printf("Longitude	%.2fW\n", -SpaceInput.lambda);
+    else
+        printf("Longitude	%.2fE\n", SpaceInput.lambda);
+    
+    printf("Altitude:	%.2f Kilometers above WGS-84 Ellipsoid\n", SpaceInput.HeightAboveEllipsoid);
+    printf("Date:		%.1f\n", TimeInput.DecimalYear);
+    printf("Secular variation not used\n");
+    printf("\n	Main Field\n");
+    printf("F	=	%-9.1f +/-%5.1f nT\n", GeomagElements.F, Errors.F);
+    printf("H	=	%-9.1f +/-%5.1f nT\n", GeomagElements.H, Errors.H);
+    printf("X	=	%-9.1f +/-%5.1f nT\n", GeomagElements.X, Errors.X);
+    printf("Y	=	%-9.1f +/-%5.1f nT\n", GeomagElements.Y, Errors.Y);
+    printf("Z	=	%-9.1f +/-%5.1f nT\n", GeomagElements.Z, Errors.Z);
+    if(GeomagElements.Decl < 0)
+        printf("Decl	=%20s  (WEST)+/-%4f\n", DeclString, 60 * Errors.Decl);
+    else
+        printf("Decl	=%20s  (EAST)+/-%4f\n", DeclString, 60 * Errors.Decl);
+    if(GeomagElements.Incl < 0)
+        printf("Incl	=%20s  (UP)+/-%4f\n", InclString, 60 * Errors.Incl);
+    else
+        printf("Incl	=%20s  (DOWN)+/-%4f\n", InclString, 60 * Errors.Incl);
 
     if(SpaceInput.phi <= -55 || SpaceInput.phi >= 55)
         /* Print Grid Variation */
