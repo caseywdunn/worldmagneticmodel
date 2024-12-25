@@ -6,6 +6,8 @@ This implements the World Magnetic Model (WMM) decoder as described in the [NOAA
 
 - `WMM2020_Linux/` the reference implementation available at https://www.ncei.noaa.gov/products/world-magnetic-model . This directory is preserved in its original form.
 
+- `src/` a reduced implementation meant to be called from other code in a minimal environment. Incorporates some code from `wmm_point.c` into a simplified `GeomagnetismLibrary.c`
+
 ## Background
 
 
