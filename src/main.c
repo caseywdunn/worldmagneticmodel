@@ -12,11 +12,12 @@
 
 int main(int argc, char *argv[]){
     // Populated by user input
-    MAGtype_GeoMagneticElements GeoMagneticElements;
+    
     MAGtype_Date UserDate;
+    MAGtype_CoordGeodetic CoordGeodetic;
 
     // Populated by field calculation
-    MAGtype_CoordGeodetic CoordGeodetic;
+    MAGtype_GeoMagneticElements GeoMagneticElements;
     MAGtype_MagneticModel *TimedMagneticModel;
     MAGtype_GeoMagneticElements Errors;
 
@@ -27,7 +28,7 @@ int main(int argc, char *argv[]){
     double year = atof(argv[4]);
 
     // Create input structures
-    ingestPoint(latitude, longitude, altitude, year, &GeoMagneticElements, &UserDate);
+    ingestPoint(latitude, longitude, altitude, year, &CoordGeodetic, &UserDate);
 
     // Calculate the field at the point and time
     calculateMagneticField(&CoordGeodetic, &UserDate, TimedMagneticModel, &GeoMagneticElements, &Errors);
