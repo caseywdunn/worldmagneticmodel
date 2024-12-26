@@ -517,11 +517,6 @@ void MAG_PrintUserDataWithUncertaintySimplified(MAGtype_GeoMagneticElements Geom
         MAGtype_CoordGeodetic SpaceInput,
         MAGtype_Date TimeInput);
 
-void MAG_PrintUserDataSimplified(MAGtype_GeoMagneticElements GeomagElements,
-        MAGtype_CoordGeodetic SpaceInput,
-        MAGtype_Date TimeInput,
-        MAGtype_MagneticModel *MagneticModel);
-
 int MAG_SetElipseDefaults(MAGtype_Ellipsoid *Ellip);
 
 #endif /*GEOMAGHEADER_H*/
