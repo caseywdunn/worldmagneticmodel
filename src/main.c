@@ -14,9 +14,9 @@
 
 typedef struct {
     double decimal_year;
-    int altitude;
-    int latitude;
-    int longitude;
+    double altitude;
+    double latitude;
+    double longitude;
     double declination;
     double inclination;
     double H;
@@ -34,7 +34,7 @@ typedef struct {
 } WMMData;
 
 void parse_line(char *line, WMMData *data) {
-    sscanf(line, "%lf %d %d %d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+    sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
            &data->decimal_year, &data->altitude, &data->latitude, &data->longitude,
            &data->declination, &data->inclination, &data->H, &data->X, &data->Y, &data->Z,
            &data->F, &data->dD_dt, &data->dI_dt, &data->dH_dt, &data->dX_dt, &data->dY_dt,
@@ -43,6 +43,11 @@ void parse_line(char *line, WMMData *data) {
 
 
 int run_tests(char *filename){
+
+    /* 
+    Based on the header in the test file, latitude and longitude are in geodedic coordinates
+    */
+
     printf("Running tests in file %s\n", filename);
 
         FILE *file = fopen("WMM2025_TestValues.txt", "r");
@@ -70,27 +75,30 @@ int run_tests(char *filename){
 
     // Print the parsed data
     for (int i = 0; i < data_count; i++) {
-        printf("Record %d: %lf %d %d %d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf\n",
+        printf("Record %d: %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf\n",
                i + 1, data[i].decimal_year, data[i].altitude, data[i].latitude, data[i].longitude,
                data[i].declination, data[i].inclination, data[i].H, data[i].X, data[i].Y, data[i].Z,
                data[i].F, data[i].dD_dt, data[i].dI_dt, data[i].dH_dt, data[i].dX_dt, data[i].dY_dt,
                data[i].dZ_dt, data[i].dF_dt);
     }
 
-    int success = TRUE;
+    int failures = 0;
+    
 
     // Loop through the data and compare the calculated values with the expected values
+    printf("declination, inclination, H, X, Y, Z, F, decimal_year\n");
     for (int i = 0; i < data_count; i++) {
         MAGtype_Date UserDate;
         MAGtype_CoordGeodetic CoordGeodetic;
         MAGtype_GeoMagneticElements GeoMagneticElements;
         MAGtype_GeoMagneticElements Errors;
 
+        int success = TRUE;
+
         ingestPoint(data[i].latitude, data[i].longitude, data[i].altitude, data[i].decimal_year, &CoordGeodetic, &UserDate);
         calculateMagneticField(&CoordGeodetic, &UserDate, &GeoMagneticElements, &Errors);
 
-        printf("declination, inclination, H, X, Y, Z, F, decimal_year\n");
-        printf("Record %d\n", i + 1);
+        printf("Record %d Latitude %lf, Longitude %lf, Altitude %lf, Year %lf\n", i + 1, data[i].latitude, data[i].longitude, data[i].altitude, data[i].decimal_year);
         printf("Expected: %lf %lf %lf %lf %lf %lf %lf %lf\n", data[i].declination, data[i].inclination, data[i].H, data[i].X, data[i].Y, data[i].Z, data[i].F, data[i].decimal_year);
         printf("Calculated: %lf %lf %lf %lf %lf %lf %lf %lf\n", GeoMagneticElements.Decl, GeoMagneticElements.Incl, GeoMagneticElements.H, GeoMagneticElements.X, GeoMagneticElements.Y, GeoMagneticElements.Z, GeoMagneticElements.F, data[i].decimal_year);
 
@@ -125,14 +133,18 @@ int run_tests(char *filename){
             success = FALSE;
         }
 
+        if (!success) {
+            failures++;
+        }
+
 
     }
 
-    if (success) {
+    if (failures == 0) {
         printf("All tests passed\n");
         return 0;
     } else {
-        printf("Some tests failed\n");
+        printf("%d records failed\n", failures);
         return 1;
     }
 

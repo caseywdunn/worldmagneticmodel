@@ -10,6 +10,17 @@ The World Magnetic Model (WMM) is described in the [NOAA Technical Report](https
 
 - `src/` a reduced implementation meant to be called from other code in a minimal environment. Incorporates some code from `wmm_point.c` into a simplified `GeomagnetismLibrary.c`
 
+
+## Usage
+
+To interogate a single point:
+
+    ./src/magpoint 30.0 -70.0 400.0 2025.0
+
+To run a series of tests:
+
+    ./src/magpoint -t WMM2025_TestValues.txt
+
 ## Notes on the NOAA report
 
 "All variables in this section adhere to the following measurement conventions: angles are in radians, lengths are in meters, magnetic intensities are in nanoteslas (nT)"
